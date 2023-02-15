@@ -4,6 +4,9 @@ document.addEventListener("keydown", checkKeyPressed);
 /* star ship element */
 var starShip = document.getElementById("star-ship");
 
+/* game container element */
+var gameContainer = document.getElementById("game-container");
+
 /* Define starting positions for star ship */
 var starShipRightPosition = 0;
 var starShipTopPosition = 100;
@@ -84,8 +87,8 @@ function fireLaserStarShip() {
     /* Append laser to clone */
     starShipClone.appendChild(starShipLaser);
 
-    /* Append clone to document body */
-    document.body.appendChild(starShipClone);
+    /* Append clone to game container */
+    gameContainer.appendChild(starShipClone);
 
     moveLaser(starShipLaser, starShipClone);
 }
@@ -97,17 +100,15 @@ function moveLaser(laser, clone) {
     var cloneLeftPosition = parseInt(clone.style.left);
 
     if(isNaN(cloneLeftPosition)) {
-        cloneLeftPosition = 50;
-    } else {
-        cloneLeftPosition += 50;
-    } 
+        cloneLeftPosition = 0;
+    }
 
     var currentLaserTimer = setInterval(function() {
-        if(laserLeftPosition > (window.innerWidth - cloneLeftPosition)) {
-            clearInterval(currentLaserTimer);
-            laser.remove();
-        }
         laserLeftPosition += 10;
         laser.style.left = laserLeftPosition + "px";
-    }, 100);
+        if(window.innerWidth <= (laserLeftPosition + 30 + cloneLeftPosition)) {
+            clearInterval(currentLaserTimer);
+            clone.remove();
+        }
+    }, 30);
 }
