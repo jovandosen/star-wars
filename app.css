@@ -22,3 +22,8 @@
     left: 100px;
     background-color: red;
 }
+
+#game-score {
+    height: 100px;
+    text-align: center;
+}

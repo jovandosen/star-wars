@@ -6,7 +6,7 @@ var starShip = document.getElementById("star-ship");
 
 /* Define starting positions for star ship */
 var starShipRightPosition = 0;
-var starShipTopPosition = 0;
+var starShipTopPosition = 100;
 
 /* Check which key is pressed */
 function checkKeyPressed(e) {
@@ -56,7 +56,7 @@ function moveStarShipDown() {
 
 /* Move star ship up */
 function moveStarShipUp() {
-    if(starShipTopPosition === 0) {
+    if(starShipTopPosition === 100) {
         return;
     }
     starShipTopPosition -= 10;
@@ -97,7 +97,9 @@ function moveLaser(laser, clone) {
     var cloneLeftPosition = parseInt(clone.style.left);
 
     if(isNaN(cloneLeftPosition)) {
-        cloneLeftPosition = 20;
+        cloneLeftPosition = 50;
+    } else {
+        cloneLeftPosition += 50;
     } 
 
     var currentLaserTimer = setInterval(function() {
