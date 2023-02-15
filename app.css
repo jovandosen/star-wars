@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+body {
+    background: url("images/space.jpeg");
+}
+
 #star-ship, .star-ship-clone {
     width: 100px;
     height: 100px;
@@ -26,4 +30,5 @@
 #game-score {
     height: 100px;
     text-align: center;
+    color: white;
 }
