@@ -86,4 +86,26 @@ function fireLaserStarShip() {
 
     /* Append clone to document body */
     document.body.appendChild(starShipClone);
+
+    moveLaser(starShipLaser, starShipClone);
+}
+
+/* Move laser */
+function moveLaser(laser, clone) {
+    var laserLeftPosition = 100;
+
+    var cloneLeftPosition = parseInt(clone.style.left);
+
+    if(isNaN(cloneLeftPosition)) {
+        cloneLeftPosition = 20;
+    } 
+
+    var currentLaserTimer = setInterval(function() {
+        if(laserLeftPosition > (window.innerWidth - cloneLeftPosition)) {
+            clearInterval(currentLaserTimer);
+            laser.remove();
+        }
+        laserLeftPosition += 10;
+        laser.style.left = laserLeftPosition + "px";
+    }, 100);
 }

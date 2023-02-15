@@ -14,15 +14,11 @@
     background-color: royalblue;
 }
 
-.star-ship-clone {
-    background-color: yellow;
-}
-
 .star-ship-laser {
     width: 30px;
     height: 10px;
     position: absolute;
     top: 45px;
-    right: -30px;
+    left: 100px;
     background-color: red;
 }
