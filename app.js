@@ -130,7 +130,7 @@ function createOpponents() {
         moveOpponent(enemy);
     }
 
-    setTimeout(createOpponents, 2000);
+    setTimeout(createOpponents, 3000);
 }
 
 /* Call create opponents function */
@@ -160,3 +160,42 @@ function moveOpponent(enemyObj) {
         }
     }, 100);
 }
+
+/* Game main timer */
+function gameMainTimer(totalSeconds) {
+    if(isNaN(totalSeconds)) {
+        return;
+    }
+
+    var finalTimerData = "";
+
+    var totalMin = Math.floor(totalSeconds / 60);
+
+    var totalSec = totalSeconds - (totalMin * 60);
+
+    if(totalMin < 10) {
+        totalMin = "0" + totalMin;
+    }
+
+    if(totalSec < 10) {
+        totalSec = "0" + totalSec;
+    }
+
+    finalTimerData = totalMin + ":" + totalSec;
+
+    document.getElementById("game-main-timer").innerHTML = finalTimerData;
+
+    totalSeconds--;
+
+    if(totalSeconds < 0) {
+        clearTimeout(mainTimerInterval);
+        document.getElementById("game-main-timer").innerHTML = "GAME OVER";
+        return;
+    }
+
+    var mainTimerInterval = setTimeout(function() {
+        gameMainTimer(totalSeconds);
+    }, 1000);
+}
+
+gameMainTimer(300);

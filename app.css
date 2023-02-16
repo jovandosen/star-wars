@@ -36,3 +36,11 @@ body {
 .opponent-ship {
     right: 0;
 }
+
+#game-main-timer {
+    font-size: 50px;
+}
+
+#game-total-score {
+    font-size: 25px;
+}
