@@ -130,7 +130,7 @@ function createOpponents() {
         moveOpponent(enemy);
     }
 
-    setTimeout(createOpponents, 1000);
+    setTimeout(createOpponents, 2000);
 }
 
 /* Call create opponents function */
@@ -141,6 +141,7 @@ function numberInRange(max, min) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+/* Move opponent */
 function moveOpponent(enemyObj) {
     var startingPoint;
 
@@ -153,8 +154,9 @@ function moveOpponent(enemyObj) {
     var currentEnemyInterval = setInterval(function() {
         startingPoint += 10;
         enemyObj.style.right = startingPoint + "px";
+        if((window.innerWidth - 100) <= startingPoint) {
+            clearInterval(currentEnemyInterval);
+            enemyObj.remove();
+        }
     }, 100);
-
-    // console.log(enemyPosition);
-    // console.log(enemyObj.style.right);
 }
