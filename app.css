@@ -8,7 +8,7 @@ body {
     background: url("images/space.jpeg");
 }
 
-#star-ship, .star-ship-clone {
+#star-ship, .star-ship-clone, .opponent-ship {
     width: 100px;
     height: 100px;
     position: absolute;
@@ -31,4 +31,8 @@ body {
     height: 100px;
     text-align: center;
     color: white;
+}
+
+.opponent-ship {
+    right: 0;
 }

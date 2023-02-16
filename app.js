@@ -112,3 +112,49 @@ function moveLaser(laser, clone) {
         }
     }, 30);
 }
+
+/* Create opponents */
+function createOpponents() {
+    var numberOfOpponents = [1, 2, 3];
+    var opponentColors = ["red", "green", "blue", "yellow", "black"];
+
+    var currentNumber = numberOfOpponents[Math.floor(Math.random() * numberOfOpponents.length)];
+
+    for(var i = 0; i < currentNumber; i++) {
+        var enemy = document.createElement("div");
+        enemy.classList.add("opponent-ship");
+        var currentColor = opponentColors[Math.floor(Math.random() * opponentColors.length)];
+        enemy.style.backgroundColor = currentColor;
+        enemy.style.top = numberInRange((window.innerHeight - 100), 100) + "px";
+        gameContainer.appendChild(enemy);
+        moveOpponent(enemy);
+    }
+
+    setTimeout(createOpponents, 1000);
+}
+
+/* Call create opponents function */
+createOpponents();
+
+/* create a function to get a random number between two numbers */
+function numberInRange(max, min) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function moveOpponent(enemyObj) {
+    var startingPoint;
+
+    var enemyPosition = parseInt(enemyObj.style.right);
+
+    if(isNaN(enemyPosition)) {
+        startingPoint = 0;
+    }
+
+    var currentEnemyInterval = setInterval(function() {
+        startingPoint += 10;
+        enemyObj.style.right = startingPoint + "px";
+    }, 100);
+
+    // console.log(enemyPosition);
+    // console.log(enemyObj.style.right);
+}
