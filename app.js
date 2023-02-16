@@ -190,6 +190,7 @@ function gameMainTimer(totalSeconds) {
     if(totalSeconds < 0) {
         clearTimeout(mainTimerInterval);
         document.getElementById("game-main-timer").innerHTML = "GAME OVER";
+        document.getElementById("game-container").remove();
         return;
     }
 
