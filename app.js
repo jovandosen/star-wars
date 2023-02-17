@@ -94,8 +94,20 @@ function fireLaserStarShip() {
     var laserId = "laser-" + laserStartId;
     starShipLaser.setAttribute("id", laserId);
 
-    /* Store laser id in laser container */
-    gameLasers.push(laserId);
+    /* Store laser object in laser container */
+    var topData = parseInt(starShip.style.top);
+    var fromData;
+    var toData;
+
+    if(isNaN(topData)) {
+        fromData = 100 + 45;
+    } else {
+        fromData = topData + 45;
+    }
+
+    toData = fromData + 10;
+
+    gameLasers.push({id: laserId, from: fromData, to: toData});
 
     /* Add style to star ship clone laser */
     starShipLaser.classList.add("star-ship-laser");
@@ -124,10 +136,13 @@ function moveLaser(laser, clone) {
         laserLeftPosition += 10;
         laser.style.left = laserLeftPosition + "px";
         if(window.innerWidth <= (laserLeftPosition + 30 + cloneLeftPosition)) {
-            var laserIdentifier = gameLasers.indexOf(laser.getAttribute("id"));
-            if(laserIdentifier > -1) {
-                gameLasers.splice(laserIdentifier, 1);
+
+            for(var i = 0; i < gameLasers.length; i++) {
+                if(laser.getAttribute("id") == gameLasers[i].id) {
+                    gameLasers.splice(gameLasers[i], 1);
+                }
             }
+
             clearInterval(currentLaserTimer);
             clone.remove();
         }
