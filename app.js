@@ -106,6 +106,7 @@ function fireLaserStarShip() {
     /* Append clone to game container */
     gameContainer.appendChild(starShipClone);
 
+    /* Start moving laser */
     moveLaser(starShipLaser, starShipClone);
 }
 
@@ -149,16 +150,17 @@ function createOpponents() {
         var opponentId = "opponent-" + opponentStartId;
         enemy.setAttribute("id", opponentId);
 
-        /* Store enemy id in opponents container */
-        gameOpponents.push(opponentId);
-
         /* Add style to enemy */
         enemy.classList.add("opponent-ship");
         var currentColor = opponentColors[Math.floor(Math.random() * opponentColors.length)];
         enemy.style.backgroundColor = currentColor;
 
         /* Add position to enemy */
-        enemy.style.top = numberInRange((window.innerHeight - 100), 100) + "px";
+        var randomNumber = numberInRange((window.innerHeight - 100), 100);
+        enemy.style.top = randomNumber + "px";
+
+        /* Store enemy object in opponents container */
+        gameOpponents.push({id: opponentId, top: randomNumber});
 
         /* Add enemy to DOM */
         gameContainer.appendChild(enemy);
@@ -192,10 +194,13 @@ function moveOpponent(enemyObj) {
         startingPoint += 10;
         enemyObj.style.right = startingPoint + "px";
         if((window.innerWidth - 100) <= startingPoint) {
-            var opponentIdentifier = gameOpponents.indexOf(enemyObj.getAttribute("id"));
-            if(opponentIdentifier > -1) {
-                gameOpponents.splice(opponentIdentifier, 1);
+
+            for(var i = 0; i < gameOpponents.length; i++) {
+                if(enemyObj.getAttribute("id") == gameOpponents[i].id) {
+                    gameOpponents.splice(gameOpponents[i], 1);
+                }
             }
+
             clearInterval(currentEnemyInterval);
             enemyObj.remove();
         }
