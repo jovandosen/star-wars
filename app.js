@@ -11,6 +11,14 @@ var gameContainer = document.getElementById("game-container");
 var starShipRightPosition = 0;
 var starShipTopPosition = 100;
 
+/* Define id starting points */
+var laserStartId = 0;
+var opponentStartId = 0;
+
+/* Define containers for lasers and opponents */
+var gameLasers = [];
+var gameOpponents = [];
+
 /* Check which key is pressed */
 function checkKeyPressed(e) {
     if(e.keyCode === 32) {
@@ -81,6 +89,14 @@ function fireLaserStarShip() {
     /* Create star ship clone laser */
     var starShipLaser = document.createElement("div");
 
+    /* Assign id to laser */
+    laserStartId += 1;
+    var laserId = "laser-" + laserStartId;
+    starShipLaser.setAttribute("id", laserId);
+
+    /* Store laser id in laser container */
+    gameLasers.push(laserId);
+
     /* Add style to star ship clone laser */
     starShipLaser.classList.add("star-ship-laser");
 
@@ -107,6 +123,10 @@ function moveLaser(laser, clone) {
         laserLeftPosition += 10;
         laser.style.left = laserLeftPosition + "px";
         if(window.innerWidth <= (laserLeftPosition + 30 + cloneLeftPosition)) {
+            var laserIdentifier = gameLasers.indexOf(laser.getAttribute("id"));
+            if(laserIdentifier > -1) {
+                gameLasers.splice(laserIdentifier, 1);
+            }
             clearInterval(currentLaserTimer);
             clone.remove();
         }
@@ -121,12 +141,29 @@ function createOpponents() {
     var currentNumber = numberOfOpponents[Math.floor(Math.random() * numberOfOpponents.length)];
 
     for(var i = 0; i < currentNumber; i++) {
+        /* Create enemy */
         var enemy = document.createElement("div");
+
+        /* Assign id to enemy */
+        opponentStartId += 1;
+        var opponentId = "opponent-" + opponentStartId;
+        enemy.setAttribute("id", opponentId);
+
+        /* Store enemy id in opponents container */
+        gameOpponents.push(opponentId);
+
+        /* Add style to enemy */
         enemy.classList.add("opponent-ship");
         var currentColor = opponentColors[Math.floor(Math.random() * opponentColors.length)];
         enemy.style.backgroundColor = currentColor;
+
+        /* Add position to enemy */
         enemy.style.top = numberInRange((window.innerHeight - 100), 100) + "px";
+
+        /* Add enemy to DOM */
         gameContainer.appendChild(enemy);
+
+        /* Start moving enemy */
         moveOpponent(enemy);
     }
 
@@ -155,6 +192,10 @@ function moveOpponent(enemyObj) {
         startingPoint += 10;
         enemyObj.style.right = startingPoint + "px";
         if((window.innerWidth - 100) <= startingPoint) {
+            var opponentIdentifier = gameOpponents.indexOf(enemyObj.getAttribute("id"));
+            if(opponentIdentifier > -1) {
+                gameOpponents.splice(opponentIdentifier, 1);
+            }
             clearInterval(currentEnemyInterval);
             enemyObj.remove();
         }
