@@ -7,6 +7,9 @@ var starShip = document.getElementById("star-ship");
 /* game container element */
 var gameContainer = document.getElementById("game-container");
 
+/* Game total points */
+var totalPoints = 0;
+
 /* Define starting positions for star ship */
 var starShipRightPosition = 0;
 var starShipTopPosition = 100;
@@ -19,18 +22,16 @@ var opponentStartId = 0;
 var gameLasers = [];
 var gameOpponents = [];
 
+/* Define laser and opponent intervals */
 var gameLaserIntervals = [];
 var gameOpponentIntervals = [];
 
+/* Define laser and opponent positions */
 var laserLeftPositions = [];
 var opponentRightPositions = [];
 
 /* Check which key is pressed */
 function checkKeyPressed(e) {
-    if(e.keyCode === 13) {
-        clearInterval(gameLaserIntervals["laser-2"]);
-        clearInterval(gameOpponentIntervals["opponent-1"]);
-    }
     if(e.keyCode === 32) {
         fireLaserStarShip();
     }
@@ -145,15 +146,10 @@ function moveLaser(laser, clone) {
         cloneLeftPosition = 0;
     }
 
-    // console.log(findInRangeOpponents(laser));
-
-    var zz = findInRangeOpponents(laser);
-
-    // var result = comparePositions(gameLasers[0], gameOpponents[0]);
+    var foundEnemey = findInRangeOpponents(laser);
 
     var currentLaserTimer = setInterval(function() {
 
-        // l = laserLeftPosition;
         gameLaserIntervals[laser.getAttribute("id")] = currentLaserTimer;
 
         laserLeftPosition += 10;
@@ -161,19 +157,40 @@ function moveLaser(laser, clone) {
 
         laserLeftPositions[laser.getAttribute("id")] = laserLeftPosition;
 
-        var xyz = opponentRightPositions[zz.getAttribute("id")];
+        if(foundEnemey) {
+            var foundEnemeyRightPosition = opponentRightPositions[foundEnemey.getAttribute("id")];
 
-        // console.log(xyz);
+            // console.log("laser: " + (laserLeftPositions[laser.getAttribute("id")]));
+            // console.log("enemy: " + (window.innerWidth - 100 - foundEnemeyRightPosition));
 
-        console.log("laser: " + (laserLeftPositions[laser.getAttribute("id")]));
-        console.log("enemy: " + (window.innerWidth - 100 - xyz));
+            if((laserLeftPositions[laser.getAttribute("id")]) >= (window.innerWidth - 100 - foundEnemeyRightPosition)) {
 
-        // if(((l + 40) >= (window.innerWidth - 100 - o)) && result) {
-        //     alert('BOOOOOOM 1');
-        // }
+                /* Clear laser and opponent global intervals */
+                clearInterval(gameLaserIntervals[laser.getAttribute("id")]);
+                clearInterval(gameOpponentIntervals[foundEnemey.getAttribute("id")]);
 
-        if((laserLeftPositions[laser.getAttribute("id")]) >= (window.innerWidth - 100 - xyz)) {
-            alert('BOOOOOOOOOOOOOOOOOOOOOOOOOOOOM');
+                totalPoints += 1;
+
+                /* Remove laser and opponent elements from DOM */
+                clone.remove();
+                foundEnemey.remove();
+
+                /* Remove laser from global array of all lasers */
+                for(var i = 0; i < gameLasers.length; i++) {
+                    if(laser.getAttribute("id") == gameLasers[i].id) {
+                        gameLasers.splice(gameLasers[i], 1);
+                    }
+                }
+
+                /* Remove opponent from global array of all opponents */
+                for(var i = 0; i < gameOpponents.length; i++) {
+                    if(foundEnemey.getAttribute("id") == gameOpponents[i].id) {
+                        gameOpponents.splice(gameOpponents[i], 1);
+                    }
+                }
+
+                document.getElementById("game-total-points").innerHTML = totalPoints;
+            }
         }
 
         if(window.innerWidth <= (laserLeftPositions[laser.getAttribute("id")] + 30 + cloneLeftPosition)) {
@@ -187,7 +204,9 @@ function moveLaser(laser, clone) {
             clearInterval(gameLaserIntervals[laser.getAttribute("id")]);
             clone.remove();
         }
+        // console.log(gameLasers);
         // console.log(gameLaserIntervals);
+        // console.log(gameOpponents);
     }, 30);
 }
 
@@ -297,7 +316,6 @@ function moveOpponent(enemyObj) {
     }
 
     var currentEnemyInterval = setInterval(function() {
-        // o = startingPoint;
         
         gameOpponentIntervals[enemyObj.getAttribute("id")] = currentEnemyInterval;
 
@@ -317,7 +335,6 @@ function moveOpponent(enemyObj) {
             clearInterval(gameOpponentIntervals[enemyObj.getAttribute("id")]);
             enemyObj.remove();
         }
-        // console.log(gameOpponentIntervals);
     }, 30);
 }
 
