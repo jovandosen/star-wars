@@ -19,13 +19,17 @@ var opponentStartId = 0;
 var gameLasers = [];
 var gameOpponents = [];
 
-var o;
-var l;
+var gameLaserIntervals = [];
+var gameOpponentIntervals = [];
+
+var laserLeftPositions = [];
+var opponentRightPositions = [];
 
 /* Check which key is pressed */
 function checkKeyPressed(e) {
     if(e.keyCode === 13) {
-        alert('wait');
+        clearInterval(gameLaserIntervals["laser-2"]);
+        clearInterval(gameOpponentIntervals["opponent-1"]);
     }
     if(e.keyCode === 32) {
         fireLaserStarShip();
@@ -115,6 +119,9 @@ function fireLaserStarShip() {
 
     gameLasers.push({id: laserId, from: fromData, to: toData});
 
+    starShipLaser.dataset.from = fromData;
+    starShipLaser.dataset.to = toData;
+
     /* Add style to star ship clone laser */
     starShipLaser.classList.add("star-ship-laser");
 
@@ -138,43 +145,38 @@ function moveLaser(laser, clone) {
         cloneLeftPosition = 0;
     }
 
-    var result = comparePositions(gameLasers[0], gameOpponents[0]);
+    // console.log(findInRangeOpponents(laser));
 
-    // console.log(result);
+    var zz = findInRangeOpponents(laser);
+
+    // var result = comparePositions(gameLasers[0], gameOpponents[0]);
 
     var currentLaserTimer = setInterval(function() {
 
-        // if(((l + 30) == (window.innerWidth - 100 - o))) {
-        //     alert('BOOOOOOM');
-        // }
-
-        l = laserLeftPosition;
+        // l = laserLeftPosition;
+        gameLaserIntervals[laser.getAttribute("id")] = currentLaserTimer;
 
         laserLeftPosition += 10;
         laser.style.left = laserLeftPosition + "px";
 
-        // console.log(cloneLeftPosition);
+        laserLeftPositions[laser.getAttribute("id")] = laserLeftPosition;
 
-        // if(result && (laserLeftPosition == (window.innerWidth - 100 - o))) {
-        //     alert('BOOOOOOM');
-        // }
+        var xyz = opponentRightPositions[zz.getAttribute("id")];
 
-        console.log("laser: " + (l + 40));
-        console.log("enemy: " + (window.innerWidth - 100 - o));
+        // console.log(xyz);
 
-        /* Correct */
-        // if(((l + 40) == (window.innerWidth - 100 - o)) || ((l + 40) > (window.innerWidth - 100 - o))) {
+        console.log("laser: " + (laserLeftPositions[laser.getAttribute("id")]));
+        console.log("enemy: " + (window.innerWidth - 100 - xyz));
+
+        // if(((l + 40) >= (window.innerWidth - 100 - o)) && result) {
         //     alert('BOOOOOOM 1');
         // }
 
-        if((((l + 40) == (window.innerWidth - 100 - o)) || ((l + 40) > (window.innerWidth - 100 - o))) && result) {
-            alert('BOOOOOOM 1');
+        if((laserLeftPositions[laser.getAttribute("id")]) >= (window.innerWidth - 100 - xyz)) {
+            alert('BOOOOOOOOOOOOOOOOOOOOOOOOOOOOM');
         }
 
-        // console.log("enemy: " + o);
-
-        // console.log((window.innerWidth - 100 - o));
-        if(window.innerWidth <= (laserLeftPosition + 30 + cloneLeftPosition)) {
+        if(window.innerWidth <= (laserLeftPositions[laser.getAttribute("id")] + 30 + cloneLeftPosition)) {
 
             for(var i = 0; i < gameLasers.length; i++) {
                 if(laser.getAttribute("id") == gameLasers[i].id) {
@@ -182,14 +184,15 @@ function moveLaser(laser, clone) {
                 }
             }
 
-            clearInterval(currentLaserTimer);
+            clearInterval(gameLaserIntervals[laser.getAttribute("id")]);
             clone.remove();
         }
+        // console.log(gameLaserIntervals);
     }, 30);
 }
 
 /* Create opponents */
-function createOpponents2() {
+function createOpponents() {
     var numberOfOpponents = [1];
     var opponentColors = ["red", "green", "blue", "yellow", "black"];
 
@@ -213,6 +216,9 @@ function createOpponents2() {
         var randomNumber = numberInRange((window.innerHeight - 100), 100);
         enemy.style.top = randomNumber + "px";
 
+        enemy.dataset.from = randomNumber;
+        enemy.dataset.to = randomNumber + 100;
+
         /* Store enemy object in opponents container */
         gameOpponents.push({id: opponentId, from: randomNumber, to: randomNumber + 100});
 
@@ -229,7 +235,7 @@ function createOpponents2() {
 }
 
 //
-function createOpponents() {
+function createOpponents3() {
     var numberOfOpponents = [1];
     var opponentColors = ["red", "green", "blue", "yellow", "black"];
 
@@ -253,6 +259,9 @@ function createOpponents() {
         var randomNumber = 200;
         enemy.style.top = randomNumber + "px";
 
+        enemy.dataset.from = randomNumber;
+        enemy.dataset.to = randomNumber + 100;
+
         /* Store enemy object in opponents container */
         gameOpponents.push({id: opponentId, from: randomNumber, to: randomNumber + 100});
 
@@ -262,7 +271,7 @@ function createOpponents() {
         gameContainer.appendChild(enemy);
 
         /* Start moving enemy */
-        moveOpponent(enemy);
+        // moveOpponent(enemy);
     }
 
     // setTimeout(createOpponents, 3000);
@@ -288,13 +297,14 @@ function moveOpponent(enemyObj) {
     }
 
     var currentEnemyInterval = setInterval(function() {
-        o = startingPoint;
+        // o = startingPoint;
+        
+        gameOpponentIntervals[enemyObj.getAttribute("id")] = currentEnemyInterval;
+
         startingPoint += 10;
         enemyObj.style.right = startingPoint + "px";
 
-        // if(((l + 40) == (window.innerWidth - 100 - o))) {
-        //     alert('BOOOOOOM 2');
-        // }
+        opponentRightPositions[enemyObj.getAttribute("id")] = startingPoint;
 
         if((window.innerWidth - 100) <= startingPoint) {
 
@@ -304,9 +314,10 @@ function moveOpponent(enemyObj) {
                 }
             }
 
-            clearInterval(currentEnemyInterval);
+            clearInterval(gameOpponentIntervals[enemyObj.getAttribute("id")]);
             enemyObj.remove();
         }
+        // console.log(gameOpponentIntervals);
     }, 30);
 }
 
@@ -351,18 +362,32 @@ function gameMainTimer(totalSeconds) {
 gameMainTimer(300);
 
 function comparePositions(laser, enemy) {
+    var inRange = false;
     var found = false;
 
-    for(var i = laser.from; i <= laser.to; i++) {
-        for(var j = enemy.from; j <= enemy.to; j++) {
+    for(var i = laser.dataset.from; i <= laser.dataset.to; i++) {
+        for(var j = enemy.dataset.from; j <= enemy.dataset.to; j++) {
             if(i == j) {
                 found = true;
             }
             if(found) {
+                inRange = enemy;
                 break;
             }
         }
     }
-    //console.log(found);
-    return found;
+
+    return inRange;
+}
+
+function findInRangeOpponents(laser) {
+    var enemies = document.getElementsByClassName("opponent-ship");
+
+    var result;
+
+    for(var i = 0; i < enemies.length; i++) {
+        result = comparePositions(laser, enemies[i]);
+    }
+
+    return result;
 }
