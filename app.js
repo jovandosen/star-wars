@@ -146,7 +146,7 @@ function moveLaser(laser, clone) {
         cloneLeftPosition = 0;
     }
 
-    var foundEnemey = findInRangeOpponents(laser);
+    var foundEnemy = findInRangeOpponents(laser);
 
     var currentLaserTimer = setInterval(function() {
 
@@ -157,23 +157,23 @@ function moveLaser(laser, clone) {
 
         laserLeftPositions[laser.getAttribute("id")] = laserLeftPosition;
 
-        if(foundEnemey) {
-            var foundEnemeyRightPosition = opponentRightPositions[foundEnemey.getAttribute("id")];
+        if(foundEnemy) {
+            var foundEnemyRightPosition = opponentRightPositions[foundEnemy.getAttribute("id")];
 
             // console.log("laser: " + (laserLeftPositions[laser.getAttribute("id")]));
             // console.log("enemy: " + (window.innerWidth - 100 - foundEnemeyRightPosition));
 
-            if((laserLeftPositions[laser.getAttribute("id")]) >= (window.innerWidth - 100 - foundEnemeyRightPosition)) {
+            if((laserLeftPositions[laser.getAttribute("id")]) >= (window.innerWidth - 100 - foundEnemyRightPosition)) {
 
                 /* Clear laser and opponent global intervals */
                 clearInterval(gameLaserIntervals[laser.getAttribute("id")]);
-                clearInterval(gameOpponentIntervals[foundEnemey.getAttribute("id")]);
+                clearInterval(gameOpponentIntervals[foundEnemy.getAttribute("id")]);
 
                 totalPoints += 1;
 
                 /* Remove laser and opponent elements from DOM */
                 clone.remove();
-                foundEnemey.remove();
+                foundEnemy.remove();
 
                 /* Remove laser from global array of all lasers */
                 for(var i = 0; i < gameLasers.length; i++) {
@@ -184,7 +184,7 @@ function moveLaser(laser, clone) {
 
                 /* Remove opponent from global array of all opponents */
                 for(var i = 0; i < gameOpponents.length; i++) {
-                    if(foundEnemey.getAttribute("id") == gameOpponents[i].id) {
+                    if(foundEnemy.getAttribute("id") == gameOpponents[i].id) {
                         gameOpponents.splice(gameOpponents[i], 1);
                     }
                 }
@@ -252,50 +252,6 @@ function createOpponents() {
 
     // setTimeout(createOpponents, 3000);
 }
-
-//
-function createOpponents3() {
-    var numberOfOpponents = [1];
-    var opponentColors = ["red", "green", "blue", "yellow", "black"];
-
-    var currentNumber = numberOfOpponents[Math.floor(Math.random() * numberOfOpponents.length)];
-
-    for(var i = 0; i < currentNumber; i++) {
-        /* Create enemy */
-        var enemy = document.createElement("div");
-
-        /* Assign id to enemy */
-        opponentStartId += 1;
-        var opponentId = "opponent-" + opponentStartId;
-        enemy.setAttribute("id", opponentId);
-
-        /* Add style to enemy */
-        enemy.classList.add("opponent-ship");
-        var currentColor = opponentColors[Math.floor(Math.random() * opponentColors.length)];
-        enemy.style.backgroundColor = currentColor;
-
-        /* Add position to enemy */
-        var randomNumber = 200;
-        enemy.style.top = randomNumber + "px";
-
-        enemy.dataset.from = randomNumber;
-        enemy.dataset.to = randomNumber + 100;
-
-        /* Store enemy object in opponents container */
-        gameOpponents.push({id: opponentId, from: randomNumber, to: randomNumber + 100});
-
-        // console.log(gameOpponents);
-
-        /* Add enemy to DOM */
-        gameContainer.appendChild(enemy);
-
-        /* Start moving enemy */
-        // moveOpponent(enemy);
-    }
-
-    // setTimeout(createOpponents, 3000);
-}
-//
 
 /* Call create opponents function */
 createOpponents();
