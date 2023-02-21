@@ -172,7 +172,8 @@ function moveLaser(laser, clone) {
         addOrUpdateLaserLeftPosition(laser, laserLeftPosition);
 
         if(foundEnemy) {
-            var foundEnemyRightPosition = opponentRightPositions[foundEnemy.getAttribute("id")];
+            // var foundEnemyRightPosition = opponentRightPositions[foundEnemy.getAttribute("id")];
+            var foundEnemyRightPosition = findEnemyRightPosition(foundEnemy);
 
             if((findLaserLeftPosition(laser)) >= (window.innerWidth - 100 - foundEnemyRightPosition)) {
 
@@ -207,8 +208,7 @@ function moveLaser(laser, clone) {
             gameLasers.splice(laser.getAttribute("id"), 1);
             clone.remove();
         }
-        // console.log(laserLeftPositions);
-        // console.log(findLaserLeftPosition(laser));
+
     }, 100);
 
     gameLaserIntervals.push({id: laser.getAttribute("id"), timer: currentLaserTimer});
@@ -276,13 +276,11 @@ function moveOpponent(enemyObj) {
     }
 
     var currentEnemyInterval = setInterval(function() {
-        
-        // gameOpponentIntervals[enemyObj.getAttribute("id")] = currentEnemyInterval;
 
         startingPoint += 10;
         enemyObj.style.right = startingPoint + "px";
 
-        opponentRightPositions[enemyObj.getAttribute("id")] = startingPoint;
+        addOrUpdateEnemyRightPosition(enemyObj, startingPoint);
 
         if((window.innerWidth - 100) <= startingPoint) {
 
@@ -293,7 +291,6 @@ function moveOpponent(enemyObj) {
             /* Remove opponent from global array of all opponents */
             gameOpponents.splice(enemyObj.getAttribute("id"), 1);
 
-            // clearInterval(gameOpponentIntervals[enemyObj.getAttribute("id")]);
             enemyObj.remove();
         }
     }, 100);
@@ -420,5 +417,34 @@ function clearEnemyInterval(enemy) {
             clearInterval(gameOpponentIntervals[i].timer);
             break;
         }
+    }
+}
+
+function findEnemyRightPosition(enemy) {
+    var position = 0;
+
+    for(var i = 0; i < opponentRightPositions.length; i++) {
+        if(enemy.getAttribute("id") == opponentRightPositions[i].id) {
+            position = opponentRightPositions[i].right;
+            break;
+        }
+    }
+
+    return position;
+}
+
+function addOrUpdateEnemyRightPosition(enemy, right) {
+    var found = false;
+
+    for(var i = 0; i < opponentRightPositions.length; i++) {
+        if(enemy.getAttribute("id") == opponentRightPositions[i].id) {
+            found = true;
+            opponentRightPositions[i].right = right;
+            break;
+        }
+    }
+
+    if(found === false) {
+        opponentRightPositions.push({id: enemy.getAttribute("id"), right: right});
     }
 }
