@@ -200,6 +200,8 @@ function moveLaser(laser, clone) {
                 /* Update total points */
                 totalPoints += 1;
                 document.getElementById("game-total-points").innerHTML = totalPoints;
+
+                foundEnemy.dataset.marked = 'no';
             }
         }
 
