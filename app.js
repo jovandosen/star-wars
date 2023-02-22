@@ -164,7 +164,7 @@ function moveLaser(laser, clone) {
     }
 
     var foundEnemy = findInRangeOpponents(laser);
-    console.log(foundEnemy);
+    // console.log(foundEnemy);
 
     var currentLaserTimer = setInterval(function() {
 
@@ -177,7 +177,7 @@ function moveLaser(laser, clone) {
             
             var foundEnemyRightPosition = findEnemyRightPosition(foundEnemy);
 
-            if((findLaserLeftPosition(laser)) >= (window.innerWidth - 100 - foundEnemyRightPosition)) {
+            if((findLaserLeftPosition(laser, cloneLeftPosition)) >= (window.innerWidth - 100 - foundEnemyRightPosition)) {
 
                 /* Clear laser and opponent intervals */
                 clearLaserInterval(laser);
@@ -204,7 +204,7 @@ function moveLaser(laser, clone) {
         }
 
         /* Check if laser is outside of game container */
-        if(window.innerWidth <= (findLaserLeftPosition(laser) + 30 + cloneLeftPosition)) {
+        if(window.innerWidth <= (findLaserLeftPosition(laser, cloneLeftPosition) + 30)) {
             clearLaserInterval(laser);
             gameLaserIntervals.splice(laser.getAttribute("id"), 1);
             gameLasers.splice(laser.getAttribute("id"), 1);
@@ -400,12 +400,14 @@ function clearLaserInterval(laser) {
 }
 
 /* Finds current laser left position */
-function findLaserLeftPosition(laser) {
+function findLaserLeftPosition(laser, fromLeft) {
     var position = 0;
+
+    position += fromLeft;
 
     for(var i = 0; i < laserLeftPositions.length; i++) {
         if(laser.getAttribute("id") == laserLeftPositions[i].id) {
-            position = laserLeftPositions[i].left;
+            position += laserLeftPositions[i].left;
             break;
         }
     }
