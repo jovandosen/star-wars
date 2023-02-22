@@ -47,6 +47,7 @@ function checkKeyPressed(e) {
         //         clearInterval(gameOpponentIntervals[i].timer);
         //     }
         // }
+        alert('wait');
     }
     if(e.keyCode === 32) {
         fireLaserStarShip();
@@ -163,6 +164,7 @@ function moveLaser(laser, clone) {
     }
 
     var foundEnemy = findInRangeOpponents(laser);
+    console.log(foundEnemy);
 
     var currentLaserTimer = setInterval(function() {
 
@@ -171,8 +173,8 @@ function moveLaser(laser, clone) {
 
         addOrUpdateLaserLeftPosition(laser, laserLeftPosition);
 
-        if(foundEnemy) {
-            // var foundEnemyRightPosition = opponentRightPositions[foundEnemy.getAttribute("id")];
+        if(foundEnemy && (foundEnemy.dataset.marked == 'yes')) {
+            
             var foundEnemyRightPosition = findEnemyRightPosition(foundEnemy);
 
             if((findLaserLeftPosition(laser)) >= (window.innerWidth - 100 - foundEnemyRightPosition)) {
@@ -242,10 +244,12 @@ function createOpponents() {
         enemy.dataset.from = randomNumber;
         enemy.dataset.to = randomNumber + 100;
 
-        /* Store enemy object in opponents container */
-        gameOpponents.push({id: opponentId, from: randomNumber, to: randomNumber + 100});
+        var enemyMarked = 'no';
 
-        // console.log(gameOpponents);
+        enemy.dataset.marked = enemyMarked;
+
+        /* Store enemy object in opponents container */
+        gameOpponents.push({id: opponentId, from: randomNumber, to: randomNumber + 100, marked: enemyMarked});
 
         /* Add enemy to DOM */
         gameContainer.appendChild(enemy);
@@ -254,7 +258,7 @@ function createOpponents() {
         moveOpponent(enemy);
     }
 
-    // setTimeout(createOpponents, 3000);
+    setTimeout(createOpponents, 5000);
 }
 
 /* Call create opponents function */
@@ -343,17 +347,27 @@ function comparePositions(laser, enemy) {
     var inRange = false;
     var found = false;
 
+    if(enemy.dataset.marked == 'yes') {
+        inRange = false;
+        return inRange;
+    }
+
     for(var i = laser.dataset.from; i <= laser.dataset.to; i++) {
         for(var j = enemy.dataset.from; j <= enemy.dataset.to; j++) {
             if(i == j) {
                 found = true;
             }
             if(found) {
+                enemy.dataset.marked = 'yes';
                 inRange = enemy;
                 break;
             }
         }
     }
+
+    // if(inRange !== false) {
+    //     inRange.dataset.marked = 'yes';
+    // }
 
     return inRange;
 }
@@ -361,11 +375,15 @@ function comparePositions(laser, enemy) {
 /* Check which opponents are in range */
 function findInRangeOpponents(laser) {
     var enemies = document.getElementsByClassName("opponent-ship");
+    // console.log(enemies);
 
     var result;
 
     for(var i = 0; i < enemies.length; i++) {
         result = comparePositions(laser, enemies[i]);
+        if(result) {
+            break;
+        }
     }
 
     return result;
