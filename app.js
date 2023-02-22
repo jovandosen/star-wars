@@ -32,23 +32,6 @@ var opponentRightPositions = [];
 
 /* Check which key is pressed */
 function checkKeyPressed(e) {
-    if(e.keyCode === 13) {
-        // gameLaserIntervals.splice("laser-1", 1);
-        // console.log(gameLaserIntervals["laser-1"]);
-
-        // for(var i = 0; i < gameLaserIntervals.length; i++) {
-        //     if(i == 0) {
-        //         clearInterval(gameLaserIntervals[i].timer);
-        //     }
-        // }
-
-        // for(var i = 0; i < gameOpponentIntervals.length; i++) {
-        //     if(i == 0) {
-        //         clearInterval(gameOpponentIntervals[i].timer);
-        //     }
-        // }
-        alert('wait');
-    }
     if(e.keyCode === 32) {
         fireLaserStarShip();
     }
@@ -164,9 +147,12 @@ function moveLaser(laser, clone) {
     }
 
     var foundEnemy = findInRangeOpponents(laser);
-    // console.log(foundEnemy);
 
     var currentLaserTimer = setInterval(function() {
+
+        if(foundEnemy === false) {
+            foundEnemy = findInRangeOpponents(laser);
+        }
 
         laserLeftPosition += 10;
         laser.style.left = laserLeftPosition + "px";
@@ -367,17 +353,12 @@ function comparePositions(laser, enemy) {
         }
     }
 
-    // if(inRange !== false) {
-    //     inRange.dataset.marked = 'yes';
-    // }
-
     return inRange;
 }
 
 /* Check which opponents are in range */
 function findInRangeOpponents(laser) {
     var enemies = document.getElementsByClassName("opponent-ship");
-    // console.log(enemies);
 
     var result;
 
