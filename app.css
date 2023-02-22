@@ -16,6 +16,10 @@ body {
 
 #star-ship {
     background-color: royalblue;
+    /* background: url("images/star-ship.png");
+    background-repeat: round;
+    width: 100px;
+    height: 100px; */
 }
 
 .star-ship-laser {
